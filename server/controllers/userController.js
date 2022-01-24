@@ -1,7 +1,7 @@
 const response = require("express");
 const User = require("../models/users");
 const { v4: uuid } = require("uuid");
-const jwt = require("jsonwebtoken");
+const { resolveHref } = require("next/dist/shared/lib/router/router");
 
 module.exports = {
   async index(req, resp) {
@@ -35,7 +35,29 @@ module.exports = {
       resp.status(400).json({ error: error.message });
     }
   },
+  async updateUser(req, resp) {
+    const { name, email, password } = req.body;
+
+    if (!name && !email && !password) {
+      return resp.status(400).json({ error: "Required fields" });
+    }
+    if (name) resp.user.name = name;
+    if (email) resp.user.email = email;
+    if (password) resp.user.password = password;
+
+    try {
+      await resp.user.save();
+      return resp.status(200).json({ name: "user updatade sucessfully" });
+    } catch (error) {
+      return resp.status(500).json({ error: error.message });
+    }
+  },
   async deleteUser(req, resp) {
-    const { name, email } = req.body;
+    try {
+      await resp.user.remove();
+      return resp.status(200).json({ name: "user deleted successfuly!" });
+    } catch (error) {
+      return response.status(500).json({ error: error.message });
+    }
   },
 };

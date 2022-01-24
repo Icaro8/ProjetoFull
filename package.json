@@ -9,6 +9,7 @@
     "back": "nodemon --watch server server/server.js"
   },
   "dependencies": {
+    "cors": "^2.8.5",
     "dotenv": "^14.2.0",
     "express": "^4.17.2",
     "jsonwebtoken": "^8.5.1",
